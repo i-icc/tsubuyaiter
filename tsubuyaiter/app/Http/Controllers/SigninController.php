@@ -3,25 +3,21 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\Auth\LoginRequest;
-use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
-use Illuminate\Foundation\Bus\DispatchesJobs;
-use Illuminate\Foundation\Validation\ValidatesRequests;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Validator;
 use \Symfony\Component\HttpFoundation\Response;
 
 class SigninController extends Controller
 {
-    use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
-
     public function signin(LoginRequest $request)
     {
-        $validator = Validator::make($request->all(), [
-            'email' => 'required|email',
-            'password' => 'required'
-        ]);
+        try {
+            $user = User::creat();
+            $token = $user->createToken($request->token_name);
 
-        return response()->json(Response::HTTP_INTERNAL_SERVER_ERROR);
+            return response()->json(['token' => $token->plainTextToken]);
+        } catch (\Exception $ex) {
+            return response()->json(Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
     }
 }

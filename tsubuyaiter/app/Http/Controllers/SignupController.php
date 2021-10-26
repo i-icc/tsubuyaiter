@@ -2,14 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\Auth\LoginRequest;
+
+use App\Http\Requests\SignupRequest;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use \Symfony\Component\HttpFoundation\Response;
 
 class SignupController extends Controller
 {
-    public function signup(LoginRequest $request)
+    public function signup(SignupRequest $request)
     {
         try {
             User::create([
