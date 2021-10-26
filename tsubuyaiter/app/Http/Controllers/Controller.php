@@ -24,22 +24,28 @@ class Controller extends BaseController
             'email' => 'required|email',
             'password' => 'required'
         ]);
+        try {
+            if ($validator->fails()) {
+                return response()->json($validator->messages(), Response::HTTP_UNPROCESSABLE_ENTITY);
+            }
 
-        if ($validator->fails()) {
-            return response()->json($validator->messages(), Response::HTTP_UNPROCESSABLE_ENTITY);
+            $user = User::create([
+                'user_name' =>  $request->user_name,
+                'email' => $request->email,
+                'password' => Hash::make($request->password),
+            ]);
+            $json = [
+                'data' => $user,
+                'message' => 'ユーザー登録完了'
+            ];
+
+            return response()->json(Response::HTTP_OK);
+        } catch (\Exception $ex) {
+            return response()->json(Response::HTTP_BAD_REQUEST);
         }
+    }
 
-        $user = User::create([
-            'user_name' =>  $request->user_name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-        ]);
-        $json = [
-            'data' => $user,
-            'message' => 'ユーザー登録完了',
-            'error' => ''
-        ];
-
-        return response()->json($json, Response::HTTP_OK);
+    public function signin(Request $request)
+    {
     }
 }
