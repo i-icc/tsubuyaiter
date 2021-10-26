@@ -22,6 +22,8 @@ class CreateFavoritesTable extends Migration
             $table->foreign('message_id')
                 ->references('id')->on('messages')
                 ->onDelete('cascade');
+
+            $table->primary(['user_id', 'message_id']);
         });
     }
 
