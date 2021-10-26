@@ -14,14 +14,12 @@ class CreateFavoritesTable extends Migration
     public function up()
     {
         Schema::create('favorites', function (Blueprint $table) {
-            $table->integer('user_id')->unsigned();
-            $table->foreign('user_id')
-                ->references('id')->on('users')
-                ->onDelete('cascade');
-            $table->integer('message_id')->unsigned();
-            $table->foreign('message_id')
-                ->references('id')->on('messages')
-                ->onDelete('cascade');
+            $table->foreignId('user_id')
+                ->constrained('users')
+                ->cascadeOnDelete();
+            $table->foreignId('message_id')
+                ->constrained('messages')
+                ->cascadeOnDelete();
 
             $table->primary(['user_id', 'message_id']);
         });
