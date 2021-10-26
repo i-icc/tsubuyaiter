@@ -2,33 +2,16 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
-use Illuminate\Foundation\Bus\DispatchesJobs;
-use Illuminate\Foundation\Validation\ValidatesRequests;
+use App\Http\Requests\Auth\LoginRequest;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Validator;
 use \Symfony\Component\HttpFoundation\Response;
 
-class FavoriteController extends Controller
+class SignupController extends Controller
 {
-
-    use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
-
-    public function signup(Request $request)
+    public function signup(LoginRequest $request)
     {
-        /** @var Illuminate\Validation\Validator $validator */
-        $validator = Validator::make($request->all(), [
-            'user_name' => 'required',
-            'email' => 'required|email',
-            'password' => 'required'
-        ]);
         try {
-            if ($validator->fails()) {
-                return response()->json($validator->messages(), Response::HTTP_UNPROCESSABLE_ENTITY);
-            }
-
             User::create([
                 'user_name' =>  $request->user_name,
                 'email' => $request->email,
