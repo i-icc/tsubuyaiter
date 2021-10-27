@@ -16,6 +16,7 @@ class PostMessageTest extends TestCase
     private $correct_password = 'hogehoge';
 
     private $message = 'test message';
+    private $too_long_message = 'test messagetest messagetest messagetest messagetest messagetest messagetest messagetest messagetest messagetest messagetest messagetest messagetest messagetest messagetest messagetest messagetest messagetest messagetest messagetest message';
     private $token = null;
     private $incorrect_token = '1234567890';
 
@@ -30,19 +31,6 @@ class PostMessageTest extends TestCase
         ]);
         $user->tokens()->delete();
         $this->token = $user->createToken("$user->id")->plainTextToken;
-    }
-
-    /**
-     * @test
-     * @return void
-     */
-    public function 認証成功テスト()
-    {
-        $response = $this->get('/api/user',  [
-            'Authorization' => 'Bearer ' . $this->token
-        ]);
-
-        $response->assertStatus(200);
     }
 
     /**
@@ -92,6 +80,31 @@ class PostMessageTest extends TestCase
             "errors" => [
                 "message" => [
                     "The message field is required."
+                ]
+            ]
+        ];
+
+        $response->assertStatus(400)
+            ->assertExactJson($data);
+    }
+
+    /**
+     * @test
+     * @return void
+     */
+    public function メッセージ投稿失敗テスト_メッセージ文字数制限()
+    {
+        $response = $this->withHeaders([
+            'Authorization' => 'Bearer ' . $this->token,
+        ])->post('/api/v1/messages', [
+            'message' => $this->too_long_message,
+        ]);
+
+        $data = [
+            "status" => 400,
+            "errors" => [
+                "message" => [
+                    "The message must not be greater than 200 characters."
                 ]
             ]
         ];
