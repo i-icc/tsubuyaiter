@@ -9,22 +9,28 @@ use Tests\TestCase;
 class SigninTest extends TestCase
 {
     use RefreshDatabase;
+
+    private $correct_user_name = 'test user';
+    private $correct_email = 'hoge@test.co.jp';
+    private $correct_password = 'hogehoge';
+
+    private $incorrect_email = 'hoge at test.co.jp';
+    private $incorrect_password = 'hogehogehoge';
+
     /**
      * @test
-     * A basic test example.
-     *
      * @return void
      */
     public function サインイン成功テスト()
     {
         $this->post('/api/v1/signup', [
-            'password' => 'hogehoge',
-            'email' => 'hoge@hoge.co.jp',
-            'user_name' => 'hoge',
+            'user_name' => $this->correct_user_name,
+            'email' => $this->correct_email,
+            'password' => $this->correct_password,
         ]);
         $response = $this->post('/api/v1/signin', [
-            'password' => 'hogehoge',
-            'email' => 'hoge@hoge.co.jp',
+            'email' => $this->correct_email,
+            'password' => $this->correct_password,
         ]);
 
         $response->assertStatus(200);
@@ -32,15 +38,13 @@ class SigninTest extends TestCase
 
     /**
      * @test
-     * A basic test example.
-     *
      * @return void
      */
-    public function サインイン失敗テスト()
+    public function サインイン失敗テスト_メールアドレス形式ミス()
     {
         $response = $this->post('/api/v1/signin', [
-            'password' => 'hogehoge',
-            'email' => 'hoge at hoge.co.jp',
+            'email' => $this->incorrect_email,
+            'password' => $this->correct_password,
         ]);
 
         $response->assertStatus(400)
@@ -55,14 +59,12 @@ class SigninTest extends TestCase
 
     /**
      * @test
-     * A basic test example.
-     *
      * @return void
      */
-    public function サインイン失敗テスト2()
+    public function サインイン失敗テスト_パラメータ不足()
     {
         $response = $this->post('/api/v1/signin', [
-            'password' => 'hogehoge',
+            'password' => $this->correct_password,
         ]);
 
         $response->assertStatus(400)
@@ -71,5 +73,19 @@ class SigninTest extends TestCase
                     "email" => ["The email field is required."],
                 ]
             ]);
+    }
+
+    /**
+     * @test
+     * @return void
+     */
+    public function サインイン失敗テスト_間違ったパスワード()
+    {
+        $response = $this->post('/api/v1/signin', [
+            'email' => $this->correct_email,
+            'password' => $this->incorrect_password,
+        ]);
+
+        $response->assertStatus(400);
     }
 }
