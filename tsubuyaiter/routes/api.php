@@ -27,7 +27,7 @@ Route::post('/v1/signup', [SignupController::class, 'signup']);
 
 Route::post('/v1/signin', [SigninController::class, 'signin']);
 
-Route::middleware('auth:sanctum')->post(
+Route::post(
     '/v1/messages',
     [MessageController::class, 'postMessage']
-);
+)->middleware('auth:sanctum');
