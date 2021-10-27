@@ -21,6 +21,6 @@ class SigninController extends Controller
  
             return response()->json(['token' => $token->plainTextToken ], Response::HTTP_OK);
         }
-        return response()->json(Response::HTTP_INTERNAL_SERVER_ERROR);
+        return response()->json(['error' => 'The email or password will be different.' ], 400);
     }
 }

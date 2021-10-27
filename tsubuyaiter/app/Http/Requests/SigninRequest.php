@@ -2,7 +2,10 @@
 
 namespace App\Http\Requests;
 
+
+use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Contracts\Validation\Validator;
 
 class SigninRequest extends FormRequest
 {
@@ -27,5 +30,20 @@ class SigninRequest extends FormRequest
             'email' => 'required|email',
             'password' => 'required'
         ];
+    }
+
+        /**
+     * [override] バリデーション失敗時のハンドリング
+     *
+     * @param Validator $validator
+     * @throw HttpResponseException
+     * @see FormRequest::failedValidation()
+     */
+    protected function failedValidation(Validator $validator) {
+        $response['status']  = 400;
+        $response['errors']  = $validator->errors();
+        throw new HttpResponseException(
+            response()->json( $response, 400 )
+        );
     }
 }
