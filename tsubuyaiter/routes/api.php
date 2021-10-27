@@ -31,3 +31,8 @@ Route::post(
     '/v1/messages',
     [MessageController::class, 'postMessage']
 )->middleware('auth:sanctum');
+
+Route::post(
+    '/v1/{message_id}/favorite',
+    [FavoriteController::class, 'giveFavorite']
+)->middleware('auth:sanctum');
