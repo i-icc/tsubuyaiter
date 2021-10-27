@@ -9,18 +9,24 @@ use Tests\TestCase;
 class SignupTest extends TestCase
 {
     use RefreshDatabase;
+
+    private $correct_user_name = 'test user';
+    private $correct_email = 'hoge@test.co.jp';
+    private $correct_password = 'hogehoge';
+
+    private $too_long_user_name = 'hogehogehogehogehogehogehogehogehogehogehogehogehogehogehogehogehoge';
+    private $incorrect_email = 'hoge at test.co.jp';
+
     /**
      * @test
-     * A basic test example.
-     *
      * @return void
      */
     public function サインアップ成功テスト()
     {
         $response = $this->post('/api/v1/signup', [
-            'password' => 'hogehoge',
-            'email' => 'hoge@hoge.co.jp',
-            'user_name' => 'hoge',
+            'user_name' => $this->correct_user_name,
+            'email' => $this->correct_email,
+            'password' => $this->correct_password,
         ]);
 
         $response->assertStatus(200);
@@ -28,15 +34,13 @@ class SignupTest extends TestCase
 
     /**
      * @test
-     * A basic test example.
-     *
      * @return void
      */
-    public function サインアップ失敗テスト()
+    public function サインアップ失敗テスト_パラメータ不足()
     {
         $response = $this->post('/api/v1/signup', [
-            'password' => 'hogehoge',
-            'user_name' => 'hoge',
+            'user_name' => $this->correct_user_name,
+            'password' => $this->correct_password,
         ]);
 
         $response->assertStatus(400)
@@ -49,21 +53,19 @@ class SignupTest extends TestCase
 
     /**
      * @test
-     * A basic test example.
-     *
      * @return void
      */
-    public function サインアップ失敗テスト2()
+    public function サインアップ失敗テスト_既存email使用()
     {
         $this->post('/api/v1/signup', [
-            'password' => 'hogehoge',
-            'email' => 'hoge@hoge.co.jp',
-            'user_name' => 'hoge',
+            'user_name' => $this->correct_user_name,
+            'email' => $this->correct_email,
+            'password' => $this->correct_password,
         ]);
         $response = $this->post('/api/v1/signup', [
-            'password' => 'hogehoge',
-            'email' => 'hoge@hoge.co.jp',
-            'user_name' => 'hoge',
+            'user_name' => $this->correct_user_name,
+            'email' => $this->correct_email,
+            'password' => $this->correct_password,
         ]);
 
         $response->assertStatus(400)
@@ -76,24 +78,42 @@ class SignupTest extends TestCase
 
     /**
      * @test
-     * A basic test example.
-     *
      * @return void
      */
-    public function サインアップ失敗テスト3()
+    public function サインアップ失敗テスト_文字数オーバー()
     {
         $response = $this->post('/api/v1/signup', [
-            'password' => 'hogehoge',
-            'user_name' => 'hogehogehogehogehgoehogehgoehogehogehoge',
+            'user_name' => $this->too_long_user_name,
+            'email' => $this->correct_email,
+            'password' => $this->correct_password,
         ]);
 
         $response->assertStatus(400)
             ->assertJson([
                 "errors" => [
-                    "email" => ["The email field is required."],
-                    "user_name" => [
-                        "The user name must not be greater than 20 characters."
-                      ]
+                    "user_name" => ["The user name must not be greater than 20 characters."]
+                ]
+            ]);
+    }
+
+    /**
+     * @test
+     * @return void
+     */
+    public function サインアップ失敗テスト_メール形式でないemail()
+    {
+        $response = $this->post('/api/v1/signup', [
+            'user_name' => $this->correct_user_name,
+            'email' => $this->incorrect_email,
+            'password' => $this->correct_password,
+        ]);
+
+        $response->assertStatus(400)
+            ->assertJson([
+                "errors" => [
+                    "email" => [
+                        "The email must be a valid email address."
+                    ]
                 ]
             ]);
     }
