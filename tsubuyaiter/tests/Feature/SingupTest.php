@@ -3,7 +3,6 @@
 namespace Tests\Feature;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Validation\Rules\DatabaseRule;
 use Tests\TestCase;
 
 class SignupTest extends TestCase
