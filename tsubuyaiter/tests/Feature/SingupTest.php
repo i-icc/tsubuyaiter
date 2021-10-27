@@ -43,12 +43,18 @@ class SignupTest extends TestCase
             'password' => $this->correct_password,
         ]);
 
-        $response->assertStatus(400)
-            ->assertJson([
-                "errors" => [
-                    "email" => ["The email field is required."]
+        $data = [
+            "status" => 400,
+            "errors" => [
+                "email" =>
+                [
+                    "The email field is required."
                 ]
-            ]);
+            ]
+        ];
+
+        $response->assertStatus(400)
+            ->assertExactJson($data);
     }
 
     /**
@@ -68,12 +74,18 @@ class SignupTest extends TestCase
             'password' => $this->correct_password,
         ]);
 
-        $response->assertStatus(400)
-            ->assertJson([
-                "errors" => [
-                    "email" => ["The email has already been taken."]
+        $data = [
+            "status" => 400,
+            "errors" => [
+                "email" =>
+                [
+                    "The email has already been taken."
                 ]
-            ]);
+            ]
+        ];
+
+        $response->assertStatus(400)
+            ->assertExactJson($data);
     }
 
     /**
@@ -88,12 +100,18 @@ class SignupTest extends TestCase
             'password' => $this->correct_password,
         ]);
 
-        $response->assertStatus(400)
-            ->assertJson([
-                "errors" => [
-                    "user_name" => ["The user name must not be greater than 20 characters."]
+        $data = [
+            "status" => 400,
+            "errors" => [
+                "user_name" =>
+                [
+                    "The user name must not be greater than 20 characters."
                 ]
-            ]);
+            ]
+        ];
+
+        $response->assertStatus(400)
+            ->assertExactJson($data);
     }
 
     /**
@@ -108,13 +126,17 @@ class SignupTest extends TestCase
             'password' => $this->correct_password,
         ]);
 
-        $response->assertStatus(400)
-            ->assertJson([
-                "errors" => [
-                    "email" => [
-                        "The email must be a valid email address."
-                    ]
+        $data = [
+            "status" => 400,
+            "errors" => [
+                "email" =>
+                [
+                    "The email must be a valid email address."
                 ]
-            ]);
+            ]
+        ];
+
+        $response->assertStatus(400)
+            ->assertExactJson($data);
     }
 }

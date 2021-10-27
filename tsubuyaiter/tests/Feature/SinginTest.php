@@ -47,14 +47,18 @@ class SigninTest extends TestCase
             'password' => $this->correct_password,
         ]);
 
-        $response->assertStatus(400)
-            ->assertJson([
-                "errors" => [
-                    "email" => [
-                        "The email must be a valid email address."
-                    ]
+        $data = [
+            "status" => 400,
+            "errors" => [
+                "email" =>
+                [
+                    "The email must be a valid email address."
                 ]
-            ]);
+            ]
+        ];
+
+        $response->assertStatus(400)
+            ->assertExactJson($data);
     }
 
     /**
@@ -67,12 +71,18 @@ class SigninTest extends TestCase
             'password' => $this->correct_password,
         ]);
 
-        $response->assertStatus(400)
-            ->assertJson([
-                "errors" => [
-                    "email" => ["The email field is required."],
+        $data = [
+            "status" => 400,
+            "errors" => [
+                "email" =>
+                [
+                    "The email field is required."
                 ]
-            ]);
+            ]
+        ];
+
+        $response->assertStatus(400)
+            ->assertExactJson($data);
     }
 
     /**
@@ -86,6 +96,11 @@ class SigninTest extends TestCase
             'password' => $this->incorrect_password,
         ]);
 
-        $response->assertStatus(400);
+        $data = [
+            "error" => "The email or password will be different."
+        ];
+
+        $response->assertStatus(400)
+            ->assertExactJson($data);
     }
 }
