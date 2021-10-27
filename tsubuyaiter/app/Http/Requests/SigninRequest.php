@@ -6,6 +6,7 @@ namespace App\Http\Requests;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator;
+use App\Rules\Hankaku;
 
 class SigninRequest extends FormRequest
 {
@@ -28,7 +29,7 @@ class SigninRequest extends FormRequest
     {
         return [
             'email' => 'required|email',
-            'password' => 'required'
+            'password' => ['required',new Hankaku]
         ];
     }
 

@@ -16,6 +16,7 @@ class SigninTest extends TestCase
 
     private $incorrect_email = 'hoge at test.co.jp';
     private $incorrect_password = 'hogehogehoge';
+    private $zenkaku_password = 'hおげほげ';
 
     /**
      * @test
@@ -33,7 +34,10 @@ class SigninTest extends TestCase
             'password' => $this->correct_password,
         ]);
 
-        $response->assertStatus(200);
+        $response->assertStatus(200)
+            ->assertJsonStructure([
+                'token'
+            ]);
     }
 
     /**
@@ -98,6 +102,30 @@ class SigninTest extends TestCase
 
         $data = [
             "error" => "The email or password will be different."
+        ];
+
+        $response->assertStatus(400)
+            ->assertExactJson($data);
+    }
+
+    /**
+     * @test
+     * @return void
+     */
+    public function サインイン失敗テスト_全角パスワード()
+    {
+        $response = $this->post('/api/v1/signin', [
+            'email' => $this->correct_email,
+            'password' => $this->zenkaku_password,
+        ]);
+
+        $data = [
+            "status" => 400,
+            "errors" => [
+                "password" => [
+                    "Please enter your password in half-width characters."
+                ]
+            ]
         ];
 
         $response->assertStatus(400)
