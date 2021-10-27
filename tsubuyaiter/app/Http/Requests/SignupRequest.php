@@ -5,6 +5,7 @@ namespace App\Http\Requests;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator;
+use App\Rules\Hankaku;
 
 class SignupRequest extends FormRequest
 {
@@ -28,7 +29,7 @@ class SignupRequest extends FormRequest
         return [
             'user_name' => 'required|max:20',
             'email' => 'required|unique:users|email|max:255',
-            'password' => 'required'
+            'password' => ['required',new Hankaku]
         ];
     }
 

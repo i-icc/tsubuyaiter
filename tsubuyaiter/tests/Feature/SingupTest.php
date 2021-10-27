@@ -16,6 +16,7 @@ class SignupTest extends TestCase
 
     private $too_long_user_name = 'hogehogehogehogehogehogehogehogehogehogehogehogehogehogehogehogehoge';
     private $incorrect_email = 'hoge at test.co.jp';
+    private $zenkaku_password = '12３４ああ';
 
     /**
      * @test
@@ -132,6 +133,31 @@ class SignupTest extends TestCase
                 "email" =>
                 [
                     "The email must be a valid email address."
+                ]
+            ]
+        ];
+
+        $response->assertStatus(400)
+            ->assertExactJson($data);
+    }
+
+    /**
+     * @test
+     * @return void
+     */
+    public function サインアップ失敗テスト_全角パスワード()
+    {
+        $response = $this->post('/api/v1/signup', [
+            'user_name' => $this->correct_user_name,
+            'email' => $this->correct_email,
+            'password' => $this->zenkaku_password,
+        ]);
+
+        $data = [
+            "status" => 400,
+            "errors" => [
+                "password" => [
+                    "Please enter your password in half-width characters."
                 ]
             ]
         ];
