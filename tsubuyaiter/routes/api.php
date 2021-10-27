@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Controllers\SignupController;
 use App\Http\Controllers\SigninController;
 use App\Http\Controllers\MessageController;
+use App\Http\Controllers\FavoriteController;
 
 /*
 |--------------------------------------------------------------------------
@@ -33,6 +34,6 @@ Route::post(
 )->middleware('auth:sanctum');
 
 Route::post(
-    '/v1/{message_id}/favorite',
+    '/v1/{message_id}/fav',
     [FavoriteController::class, 'giveFavorite']
 )->middleware('auth:sanctum');
