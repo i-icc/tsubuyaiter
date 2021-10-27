@@ -17,6 +17,7 @@ class PostMessageTest extends TestCase
 
     private $message = 'test message';
     private $token = null;
+    private $incorrect_token = '1234567890';
 
     protected function setUp(): Void // ※ Voidが必要
     {
@@ -29,7 +30,19 @@ class PostMessageTest extends TestCase
         ]);
         $user->tokens()->delete();
         $this->token = $user->createToken("$user->id")->plainTextToken;
-        var_dump($this->token);
+    }
+
+    /**
+     * @test
+     * @return void
+     */
+    public function 認証成功テスト()
+    {
+        $response = $this->get('/api/user',  [
+            'Authorization' => 'Bearer ' . $this->token
+        ]);
+
+        $response->assertStatus(200);
     }
 
     /**
@@ -38,8 +51,9 @@ class PostMessageTest extends TestCase
      */
     public function メッセージ投稿成功テスト()
     {
-        $response = $this->post('/api/v1/messages', [
+        $response = $this->withHeaders([
             'Authorization' => 'Bearer ' . $this->token,
+        ])->post('/api/v1/messages', [
             'message' => $this->message,
         ]);
 
@@ -54,11 +68,35 @@ class PostMessageTest extends TestCase
      */
     public function メッセージ投稿失敗テスト_アクセストークンミス()
     {
-        $response = $this->post('/api/v1/messages', [
-            'Authorization' => 'Bearer test',
+        $response = $this->withHeaders([
+            'Authorization' => 'Bearer ' . $this->incorrect_token,
+        ])->post('/api/v1/messages', [
             'message' => $this->message,
         ]);
 
         $response->assertStatus(302);
+    }
+
+    /**
+     * @test
+     * @return void
+     */
+    public function メッセージ投稿失敗テスト_パラメータ不足()
+    {
+        $response = $this->withHeaders([
+            'Authorization' => 'Bearer ' . $this->token,
+        ])->post('/api/v1/messages');
+
+        $data = [
+            "status" => 400,
+            "errors" => [
+                "message" => [
+                    "The message field is required."
+                ]
+            ]
+        ];
+
+        $response->assertStatus(400)
+            ->assertExactJson($data);
     }
 }
