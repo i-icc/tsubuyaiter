@@ -7,6 +7,10 @@ use Illuminate\Http\Request;
 
 class MessageController extends Controller
 {
+    public function postMessage(Request $request)
+    {
+        return "test";
+    }
     /**
      * Display a listing of the resource.
      *
