@@ -4,13 +4,19 @@ namespace App\Http\Controllers;
 
 use App\Models\Message;
 use Illuminate\Http\Request;
+use App\Http\Requests\MessageRequest;
+use App\Models\User;
+use \Symfony\Component\HttpFoundation\Response;
+use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\Controller;
 
 class MessageController extends Controller
 {
-    public function postMessage(Request $request)
+    public function postMessage(MessageRequest $request)
     {
         return "test";
     }
+
     /**
      * Display a listing of the resource.
      *
