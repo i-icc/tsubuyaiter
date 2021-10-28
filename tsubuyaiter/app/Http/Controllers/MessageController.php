@@ -31,6 +31,6 @@ class MessageController extends Controller
         })->select(['messages.user_id', 'id as message_id', 'message', 'created_at', 'fav'])
             ->get();
 
-        return response()->json(['sub' => $sub_query, 'messages' => $messages], Response::HTTP_OK);;
+        return response()->json(['messages' => $messages], Response::HTTP_OK);;
     }
 }
