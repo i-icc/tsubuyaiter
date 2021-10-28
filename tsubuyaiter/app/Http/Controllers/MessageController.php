@@ -19,4 +19,9 @@ class MessageController extends Controller
         ]);
         return response()->json(['message_id' => $message->id ], Response::HTTP_OK);;
     }
+
+    public function getMessages(Request $request)
+    {
+        return "test";
+    }
 }
