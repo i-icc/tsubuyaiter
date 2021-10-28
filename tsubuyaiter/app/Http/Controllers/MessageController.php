@@ -18,20 +18,19 @@ class MessageController extends Controller
             'user_id' =>  $request->user()->id,
             'message' => $request->message,
         ]);
-        return response()->json(['message_id' => $message->id ], Response::HTTP_OK);;
+        return response()->json(['message_id' => $message->id], Response::HTTP_OK);;
     }
 
     public function getMessages(Request $request)
     {
         $sub_query = Favorite::select(DB::raw('count(message_id) as fav, message_id'))
-        ->groupBy('message_id');
-
-        //$messages = Message::select('*')->leftJoin("{{$sub_query}} as fav", 'messages.id', '=', 'fav.message_id')->get();
+            ->groupBy('message_id');
 
         $messages = Message::leftJoinSub($sub_query, 'fav', function ($join) {
             $join->on('messages.id', '=', 'fav.message_id');
-        })->get();
+        })->select(['messages.user_id', 'id as message_id', 'message', 'created_at', 'fav'])
+            ->get();
 
-        return response()->json(['sub' => $sub_query,'messages' => $messages], Response::HTTP_OK);;
+        return response()->json(['sub' => $sub_query, 'messages' => $messages], Response::HTTP_OK);;
     }
 }
