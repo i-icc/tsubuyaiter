@@ -28,7 +28,8 @@ class MessageController extends Controller
 
         $messages = Message::leftJoinSub($sub_query, 'fav', function ($join) {
             $join->on('messages.id', '=', 'fav.message_id');
-        })->select(['messages.user_id', 'id as message_id', 'message', 'created_at', 'fav'])
+        })->select(['user_id', 'id as message_id', 'message', 'created_at', 'fav'])
+            ->orderBy('created_at', 'DESC')
             ->get();
 
         return response()->json(['messages' => $messages], Response::HTTP_OK);;
