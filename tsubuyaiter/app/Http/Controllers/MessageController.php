@@ -22,6 +22,8 @@ class MessageController extends Controller
 
     public function getMessages(Request $request)
     {
-        return "test";
+        $messages = Message::all();
+
+        return response()->json(['messages' => $messages ], Response::HTTP_OK);;
     }
 }
