@@ -37,3 +37,8 @@ Route::post(
     '/v1/{message_id}/fav',
     [FavoriteController::class, 'giveFavorite']
 )->middleware('auth:sanctum');
+
+Route::get(
+    '/v1/messages',
+    [MessageController::class, 'getMessages']
+);
