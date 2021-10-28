@@ -6,8 +6,9 @@ use App\Models\Message;
 use Illuminate\Http\Request;
 use App\Http\Requests\MessageRequest;
 use \Symfony\Component\HttpFoundation\Response;
-use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
+use App\Models\Favorite;
+use Illuminate\Support\Facades\DB;
 
 class MessageController extends Controller
 {
@@ -22,8 +23,15 @@ class MessageController extends Controller
 
     public function getMessages(Request $request)
     {
-        $messages = Message::all();
+        $sub_query = Favorite::select(DB::raw('count(message_id) as fav, message_id'))
+        ->groupBy('message_id');
 
-        return response()->json(['messages' => $messages ], Response::HTTP_OK);;
+        //$messages = Message::select('*')->leftJoin("{{$sub_query}} as fav", 'messages.id', '=', 'fav.message_id')->get();
+
+        $messages = Message::leftJoinSub($sub_query, 'fav', function ($join) {
+            $join->on('messages.id', '=', 'fav.message_id');
+        })->get();
+
+        return response()->json(['sub' => $sub_query,'messages' => $messages], Response::HTTP_OK);;
     }
 }
